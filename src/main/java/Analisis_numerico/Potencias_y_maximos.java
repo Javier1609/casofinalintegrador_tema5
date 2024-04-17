@@ -1,51 +1,58 @@
 package Analisis_numerico;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Potencias_y_maximos {
-    public static double calcularPotencia(double base, int exponente) {
-        if (exponente == 0) {
-            return 1;
-        } else if (exponente < 0) {
-            return 1 / calcularPotencia(base, -exponente);
-        } else {
-            return base * calcularPotencia(base, exponente - 1);
+
+    public int calcularPotencia(int base, int exponente) {
+        int resultado = 1;
+        while (exponente != 0) {
+            resultado *= base;
+            --exponente;
         }
+        return resultado;
     }
 
-    public static double encontrarMaximo(double[] datos) {
-        return encontrarMaximo(datos, 0, datos[0]);
-    }
-
-    private static double encontrarMaximo(double[] datos, int index, double max) {
-
-        if (index == datos.length) {
-            return max;
-        } else {
-            if (datos[index] > max) {
-                max = datos[index];
-            }
-            return encontrarMaximo(datos, index + 1, max);
-        }
-    }
-
-    public static boolean validarDatos(double[] datos) {
-        for (double dato : datos) {
-            if (Double.isNaN(dato)) {
-                return false;
+    public int encontrarMaximo(List<Integer> numeros) {
+        int maximo = numeros.get(0);
+        for (int numero : numeros) {
+            if (numero > maximo) {
+                maximo = numero;
             }
         }
-        return true;
+        return maximo;
     }
 
-    public static void main(String[] args) {
-        double base = 2;
-        int exponente = 3;
-        System.out.println("Potencia: " + calcularPotencia(base, exponente));
-
-        double[] datos = {1.2, 2.3, 3.4, 2.2, 1.1};
-        if (validarDatos(datos)) {
-            System.out.println("Valor máximo: " + encontrarMaximo(datos));
-        } else {
-            System.out.println("Invalid data.");
+    public List<Integer> ordenarNumeros(List<Integer> numeros) {
+        if (numeros.size() <= 1) {
+            return numeros;
         }
+        List<Integer> izquierda = new ArrayList<>();
+        List<Integer> derecha = new ArrayList<>();
+        int pivot = numeros.get(numeros.size() / 2);
+        for (int num : numeros) {
+            if (num < pivot) {
+                izquierda.add(num);
+            } else if (num > pivot) {
+                derecha.add(num);
+            }
+        }
+        izquierda = ordenarNumeros(izquierda);
+        derecha = ordenarNumeros(derecha);
+        izquierda.add(pivot);
+        izquierda.addAll(derecha);
+        return izquierda;
+    }
+
+    public int calcularPotenciasYEncontrarMaximo(int base1, int exponente1, int base2, int exponente2, int base3, int exponente3) {
+        int resultado1 = calcularPotencia(base1, exponente1);
+        int resultado2 = calcularPotencia(base2, exponente2);
+        int resultado3 = calcularPotencia(base3, exponente3);
+
+        List<Integer> resultados = Arrays.asList(resultado1, resultado2, resultado3);
+
+        return encontrarMaximo(resultados);
     }
 }

@@ -1,21 +1,29 @@
 package Analisis_genomico;
 
 public class Combinaciones_geneticas {
-    public static int countGenes(String dna) {
-        if (dna.isEmpty()) {
-            return 0;
+
+    public static long calcularCombinacionesRecursivo(int n, int k) {
+        if (k == 0 || k == n) {
+            return 1;
         } else {
-            int index = dna.indexOf("ATG");
-            if (index != -1) {
-                return 1 + countGenes(dna.substring(index + 3));
-            } else {
-                return 0;
-            }
+            return calcularCombinacionesRecursivo(n - 1, k - 1) + calcularCombinacionesRecursivo(n - 1, k);
         }
     }
 
-    public static void main(String[] args) {
-        String dna = "ATGCGTATGAGCTAGCATG";
-        System.out.println("Number of genes: " + countGenes(dna));
+    public static long calcularCombinacionesIterativo(int n, int k) {
+        long C[][] = new long[n + 1][k + 1];
+        int i, j;
+
+        for (i = 0; i <= n; i++) {
+            for (j = 0; j <= Math.min(i, k); j++) {
+                if (j == 0 || j == i) {
+                    C[i][j] = 1;
+                } else {
+                    C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
+                }
+            }
+        }
+
+        return C[n][k];
     }
 }

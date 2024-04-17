@@ -1,49 +1,48 @@
 package Informacion_cientifica;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Fechas {
-    private static List<Date> fechas = new ArrayList<>();
-    private static SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
-    public static boolean validarFecha(String fecha) {
-        try {
-            formato.parse(fecha);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
+    private List<LocalDate> fechas = new ArrayList<>();
+
+    public void agregarFecha(LocalDate fecha) {
+        fechas.add(fecha);
     }
 
-    public static void introducirFecha(String fecha) {
-        if (validarFecha(fecha)) {
-            try {
-                Date fechaConvertida = formato.parse(fecha);
-                fechas.add(fechaConvertida);
-            } catch (ParseException e) {
-                e.printStackTrace();
+    public List<LocalDate> listarFechas() {
+        fechas = mergeSort(fechas);
+        return fechas;
+    }
+
+    private List<LocalDate> mergeSort(List<LocalDate> fechas) {
+        if (fechas.size() <= 1) {
+            return fechas;
+        }
+        int mid = fechas.size() / 2;
+        List<LocalDate> left = mergeSort(new ArrayList<>(fechas.subList(0, mid)));
+        List<LocalDate> right = mergeSort(new ArrayList<>(fechas.subList(mid, fechas.size())));
+        return merge(left, right);
+    }
+
+    private List<LocalDate> merge(List<LocalDate> left, List<LocalDate> right) {
+        List<LocalDate> merged = new ArrayList<>();
+        int i = 0, j = 0;
+        while (i < left.size() && j < right.size()) {
+            if (left.get(i).compareTo(right.get(j)) <= 0) {
+                merged.add(left.get(i++));
+            } else {
+                merged.add(right.get(j++));
             }
-        } else {
-            System.out.println("Formato de fecha incorrecto. Use dd/MM/yyyy.");
         }
-    }
-
-    public static void listarFechas() {
-        Collections.sort(fechas);
-        for (Date fecha : fechas) {
-            System.out.println(formato.format(fecha));
+        while (i < left.size()) {
+            merged.add(left.get(i++));
         }
-    }
-
-    public static void main(String[] args) {
-        // Introducir fechas
-        introducirFecha("12/12/2022");
-        introducirFecha("11/11/2021");
-        introducirFecha("10/10/2023");
-
-        // Listar fechas
-        listarFechas();
+        while (j < right.size()) {
+            merged.add(right.get(j++));
+        }
+        return merged;
     }
 }

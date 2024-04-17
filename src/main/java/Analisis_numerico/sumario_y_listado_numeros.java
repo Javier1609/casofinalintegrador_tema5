@@ -1,38 +1,56 @@
 package Analisis_numerico;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class sumario_y_listado_numeros {
-    public static int sumaNumeros(int n) {
+
+    public int calcularSumatoria(int n) {
         if (n <= 0) {
             return 0;
         } else {
-            return n + sumaNumeros(n - 1);
+            return n + calcularSumatoria(n - 1);
         }
     }
 
-    public static void listarNumeros(int inicio, int fin) {
-        if (inicio > fin || inicio < 0 || fin < 0) {
-            return;
+    public List<Integer> listarNumeros(int inicio, int fin) {
+        if (inicio > fin) {
+            return new ArrayList<>();
         } else {
-            System.out.println(inicio);
-            listarNumeros(inicio + 1, fin);
+            List<Integer> lista = listarNumeros(inicio, fin - 1);
+            lista.add(fin);
+            return lista;
         }
     }
 
-    public static void main(String[] args) {
-        int n = 0;
-        if (n >= 0) {
-            System.out.println("Suma de números naturales hasta " + n + ": " + sumaNumeros(n));
-        } else {
-            System.out.println("Invalid number.");
-        }
+    public List<Integer> ordenarNumeros(int inicio, int fin) {
+        List<Integer> numeros = listarNumeros(inicio, fin);
+        ordenarNumerosRecursivo(numeros, 0, numeros.size() - 1);
+        return numeros;
+    }
 
-        int inicio = 1;
-        int fin = 10;
-        if (inicio >= 0 && fin >= 0 && inicio <= fin) {
-            System.out.println("Listado de números del " + inicio + " al " + fin + ":");
-            listarNumeros(inicio, fin);
-        } else {
-            System.out.println("Invalid range.");
+    private void ordenarNumerosRecursivo(List<Integer> numeros, int inicio, int fin) {
+        if (inicio < fin) {
+            int pivotIndex = partition(numeros, inicio, fin);
+            ordenarNumerosRecursivo(numeros, inicio, pivotIndex - 1);
+            ordenarNumerosRecursivo(numeros, pivotIndex + 1, fin);
         }
+    }
+
+    private int partition(List<Integer> numeros, int inicio, int fin) {
+        int pivot = numeros.get(fin);
+        int i = inicio - 1;
+        for (int j = inicio; j < fin; j++) {
+            if (numeros.get(j) < pivot) {
+                i++;
+                int temp = numeros.get(i);
+                numeros.set(i, numeros.get(j));
+                numeros.set(j, temp);
+            }
+        }
+        int temp = numeros.get(i + 1);
+        numeros.set(i + 1, numeros.get(fin));
+        numeros.set(fin, temp);
+        return i + 1;
     }
 }

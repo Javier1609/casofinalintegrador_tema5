@@ -1,47 +1,38 @@
+
 package Informacion_cientifica;
 
 import java.io.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Organizacion_de_documentos {
-    public static void ordenarArchivo(String rutaArchivo) {
-        File archivo = new File(rutaArchivo);
-        if (!archivo.exists()) {
-            System.out.println("El archivo no existe.");
-            return;
-        }
 
-        try {
-            // Leer el archivo
-            BufferedReader reader = new BufferedReader(new FileReader(rutaArchivo));
-
-            // Almacenar las líneas en una lista
-            List<String> lineas = new ArrayList<>();
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                lineas.add(linea);
-            }
-            reader.close();
-
-            // Ordenar la lista
-            Collections.sort(lineas);
-
-            // Escribir la lista ordenada en un nuevo archivo
-            BufferedWriter writer = new BufferedWriter(new FileWriter("archivo_ordenado.txt"));
-            for (String lineaOrdenada : lineas) {
-                writer.write(lineaOrdenada);
+    public static void sortAndWriteLines(ArrayList<String> lines, String outputPath) throws IOException {
+        Collections.sort(lines);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {
+            for (String sortedLine : lines) {
+                writer.write(sortedLine);
                 writer.newLine();
             }
-            writer.close();
-
-        } catch (FileNotFoundException e) {
-            System.out.println("El archivo no fue encontrado: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error al leer o escribir el archivo: " + e.getMessage());
         }
     }
 
-    public static void main(String[] args) {
-        ordenarArchivo("ruta_al_archivo.txt");
+    public static void sortLines(String inputFilePath, String outputFilePath) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(inputFilePath));
+        List<String> sortedLines = new ArrayList<>();
+        for (String line : lines) {
+            sortedLines.add(sortWordsInLine(line));
+        }
+        Files.write(Paths.get(outputFilePath), sortedLines);
+    }
+
+    public static String sortWordsInLine(String line) {
+        String[] words = line.split("\\s+");
+        Arrays.sort(words);
+        return String.join(" ", words);
     }
 }
