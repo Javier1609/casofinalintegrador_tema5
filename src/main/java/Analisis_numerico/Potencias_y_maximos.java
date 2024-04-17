@@ -16,6 +16,7 @@ public class Potencias_y_maximos {
     }
 
     private static double encontrarMaximo(double[] datos, int index, double max) {
+
         if (index == datos.length) {
             return max;
         } else {
