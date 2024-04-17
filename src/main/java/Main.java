@@ -255,7 +255,7 @@ public class Main {
                 }
             }
         });
-
+// ok
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
